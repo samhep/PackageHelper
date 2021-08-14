@@ -11,7 +11,7 @@ function Get-RegInformation {
           $regKeys = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall", "HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall"
           Get-ChildItem $regKeys -rec -ea SilentlyContinue | ForEach-Object { 
               $CurrentKey = Get-ItemProperty -Path $_.PsPath
-              if ($CurrentKey.DisplayName -ne $null) {
+              if ($null -ne $CurrentKey.DisplayName) {
                   $appConfig = [PSCustomObject]@{
           
                       DisplayName = $CurrentKey.DisplayName
@@ -72,39 +72,33 @@ Function Get-ApplicationInfo {
         [string] $SearchTerm
     )
 
-
-    $regInformation = Get-RegInformation
-
-    foreach($app in $regInformation) {
+    Get-RegInformation | ForEach-Object{
     
-        if(Select-String -InputObject $app.DisplayName -Pattern $SearchTerm -SimpleMatch){
+        if(Select-String -InputObject $_.DisplayName -Pattern $SearchTerm){
             
-           
+
             $matchedappConfig = [PSCustomObject]@{
                   
-                DisplayName = $app.DisplayName
-                DisplayVersion = $app.DisplayVersion
-                InstallLocation = $app.InstallLocation
-                InstallSource = $app.InstallSource
-                InstallDate = $app.InstallDate
-                Publisher = $app.Publisher
-                UninstallString = $app.UninstallString
-                QuietUninstallString = $app.QuietUninstallString
-                PSPath = $app.PSPath
+                DisplayName = $_.DisplayName
+                DisplayVersion = $_.DisplayVersion
+                InstallLocation = $_.InstallLocation
+                InstallSource = $_.InstallSource
+                InstallDate = $_.InstallDate
+                Publisher = $_.Publisher
+                UninstallString = $_.UninstallString
+                QuietUninstallString = $_.QuietUninstallString
+                PSPath = $_.PSPath
                 Error = $false
                 ErrorMessage = $null
 
             }
+            Return $matchedappConfig
+                
             
-                        
         }
     
     }
 
-
-    Return $matchedappConfig
-    
 }
-
 
 Export-ModuleMember -Function Get-ApplicationInfo
