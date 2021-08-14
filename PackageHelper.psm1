@@ -8,31 +8,34 @@ function Get-RegInformation {
     )#>
 
     Try {
-          $regKeys = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall", "HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall"
-          Get-ChildItem $regKeys -rec -ea SilentlyContinue | ForEach-Object { 
-              $CurrentKey = Get-ItemProperty -Path $_.PsPath
-              if ($null -ne $CurrentKey.DisplayName) {
-                  $appConfig = [PSCustomObject]@{
-          
-                      DisplayName = $CurrentKey.DisplayName
-                      DisplayVersion = $CurrentKey.DisplayVersion
-                      InstallLocation = $CurrentKey.InstallLocation
-                      InstallSource = $CurrentKey.InstallSource
-                      InstallDate = $CurrentKey.InstallDate
-                      Publisher = $CurrentKey.Publisher
-                      UninstallString = $CurrentKey.UninstallString
-                      QuietUninstallString = $CurrentKey.QuietUninstallString
-                      PSPath = $CurrentKey.PSPath
-                      Error = $false
-                      ErrorMessage = $null
+            $regApps = New-Object System.Collections.ArrayList
+            $regKeys = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall", "HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall"
+            Get-ChildItem $regKeys -rec -ea SilentlyContinue | ForEach-Object { 
+                $CurrentKey = Get-ItemProperty -Path $_.PsPath
+                if ($null -ne $CurrentKey.DisplayName) {
+                    $appConfig = [PSCustomObject]@{
+            
+                        DisplayName = $CurrentKey.DisplayName
+                        DisplayVersion = $CurrentKey.DisplayVersion
+                        InstallLocation = $CurrentKey.InstallLocation
+                        InstallSource = $CurrentKey.InstallSource
+                        InstallDate = $CurrentKey.InstallDate
+                        Publisher = $CurrentKey.Publisher
+                        UninstallString = $CurrentKey.UninstallString
+                        QuietUninstallString = $CurrentKey.QuietUninstallString
+                        PSPath = $CurrentKey.PSPath
+                        Error = $false
+                        ErrorMessage = $null
 
-                  }
+                    }
 
-                  Return $appConfig
-              }
+                    $regApps.Add($appConfig) | Out-Null 
+                }
 
 
-          }   
+            }   
+
+            Return $regApps
 
     }
     Catch {
@@ -74,7 +77,7 @@ Function Get-ApplicationInfo {
 
     $matchedApps = New-Object System.Collections.ArrayList
 
-    Get-RegInformation | ForEach-Object{
+    Get-RegInformation | ForEach-Object {
     
         if(Select-String -InputObject $_.DisplayName -Pattern $SearchTerm){
             
@@ -95,8 +98,7 @@ Function Get-ApplicationInfo {
 
             }
 
-            $matchedApps.Add($matchedAppConfig) | Out-Null
-                
+            $matchedApps.Add($matchedAppConfig) | Out-Null 
             
         }
     
