@@ -8,7 +8,7 @@ function Get-RegInformation {
     Long description
     
     .EXAMPLE
-    An example
+    Get-RegInformation
     
     .NOTES
     General notes
@@ -86,7 +86,7 @@ Function Get-ApplicationInfo {
     Parameter description
     
     .EXAMPLE
-    An example
+    Get-ApplicationInfo -SearchTerm "Git"
     
     .NOTES
     General notes
@@ -145,7 +145,7 @@ function Export-ApplicationConfig {
     Parameter description
     
     .EXAMPLE
-    An example
+    Get-ApplicationInfo -SearchTerm Git | Export-ApplicationConfig -FileType json
     
     .NOTES
     General notes
@@ -182,7 +182,7 @@ function Get-IntuneWin32Tool {
     Long description
     
     .EXAMPLE
-    An example
+    Get-IntuneWin32Tool
     
     .NOTES
     General notes
@@ -236,7 +236,7 @@ function New-IntuneWin {
     Long description
     
     .EXAMPLE
-    An example
+    New-IntuneWin -SourceFolder C:\Users\exampleuser\Downloads\nuget -InstallFile nuget.exe
     
     .NOTES
     General notes
