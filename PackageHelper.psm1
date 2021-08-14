@@ -72,12 +72,14 @@ Function Get-ApplicationInfo {
         [string] $SearchTerm
     )
 
+    $matchedApps = New-Object System.Collections.ArrayList
+
     Get-RegInformation | ForEach-Object{
     
         if(Select-String -InputObject $_.DisplayName -Pattern $SearchTerm){
             
 
-            $matchedappConfig = [PSCustomObject]@{
+            $matchedAppConfig = [PSCustomObject]@{
                   
                 DisplayName = $_.DisplayName
                 DisplayVersion = $_.DisplayVersion
@@ -92,12 +94,15 @@ Function Get-ApplicationInfo {
                 ErrorMessage = $null
 
             }
-            Return $matchedappConfig
+
+            $matchedApps.Add($matchedAppConfig) | Out-Null
                 
             
         }
     
     }
+
+    Return $matchedApps
 
 }
 
