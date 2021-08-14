@@ -1,12 +1,5 @@
 ﻿
 function Get-RegInformation {
-    <#
-    Param(
-     [parameter(Mandatory=$true)]
-     [ValidateSet("x64", "x86")]
-     [String[]]$Architecture
-    )#>
-
     Try {
             $regApps = New-Object System.Collections.ArrayList
             $regKeys = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall", "HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall"
@@ -71,7 +64,7 @@ function Get-RegInformation {
 Function Get-ApplicationInfo {
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory)]
         [string] $SearchTerm
     )
 
@@ -108,4 +101,28 @@ Function Get-ApplicationInfo {
 
 }
 
-Export-ModuleMember -Function Get-ApplicationInfo
+function Export-ApplicationConfig {
+
+    [CmdletBinding()] 
+    Param(
+        [Parameter(ValueFromPipeline, Mandatory)][object] $obj, 
+        [Parameter(Mandatory)][ValidateSet("json")][String[]] $FileType
+    )
+    Process{
+        $obj | ForEach-Object {
+            Try {       
+
+                switch ($FileType) {
+                    json { 
+                        $obj | ConvertTo-Json | Out-File -FilePath "C:\PackageHelper\Export\$($obj.DisplayName).json" -Verbose
+                    }
+                    Default { $obj | ConvertTo-Json | Out-File -FilePath "C:\PackageHelper\Export\$($obj.DisplayName).json" -Verbose }
+                }
+            }
+            Catch{}
+        }
+    }
+ 
+}
+
+Export-ModuleMember -Function Get-ApplicationInfo, Export-ApplicationConfig
