@@ -162,9 +162,9 @@ function Export-ApplicationConfig {
 
                 switch ($FileType) {
                     json { 
-                        $obj | ConvertTo-Json | Out-File -FilePath "C:\PackageHelper\Export\$($obj.DisplayName).json" -Verbose
+                        $obj | ConvertTo-Json | Out-File -FilePath "C:\PackageHelper\Export\Configurations\$($obj.DisplayName).json" -Verbose
                     }
-                    Default { $obj | ConvertTo-Json | Out-File -FilePath "C:\PackageHelper\Export\$($obj.DisplayName).json" -Verbose }
+                    Default { $obj | ConvertTo-Json | Out-File -FilePath "C:\PackageHelper\Export\Configurations\$($obj.DisplayName).json" -Verbose }
                 }
             }
             catch{}
@@ -225,6 +225,50 @@ function Get-IntuneWin32Tool {
     catch {
         
     }
+}
+
+function New-IntuneWin {
+    <#
+    .SYNOPSIS
+    Short description
+    
+    .DESCRIPTION
+    Long description
+    
+    .EXAMPLE
+    An example
+    
+    .NOTES
+    General notes
+    #>
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory)]
+        [string] $SourceFolder,
+        [Parameter(Mandatory)]
+        [string] $InstallFile,
+        [Parameter()]
+        [string] $Output = "C:\PackageHelper\Export\IntuneWin"
+    )
+
+    try {
+
+        $IntuneWinAppUtil = "C:\PackageHelper\Tools\IntuneWinAppUtil\IntuneWinAppUtil.exe"
+
+        if (!(Test-Path $IntuneWinAppUtil)) {
+            Get-IntuneWin32Tool
+        }
+       
+
+        if (Test-Path -Path "$SourceFolder\$InstallFile") {
+            Start-Process -FilePath $IntuneWinAppUtil -ArgumentList "-c $SourceFolder -s $InstallFile -o $Output -q" -WindowStyle Hidden -Wait
+        }
+
+    }
+    catch {
+        
+    }
+    
 }
 
 Export-ModuleMember -Function Get-ApplicationInfo, Export-ApplicationConfig
