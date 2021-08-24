@@ -63,7 +63,7 @@ function Initialize-PackageHelper {
                 Catch {Write-Warning 'Failed to create "$global:PackageHelperModulePath"'; Break}
             }
            
-            $folders = "Export"
+            $folders = "Export", "Tools", "Temp"
             
             $folders | ForEach-Object {
 

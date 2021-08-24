@@ -45,11 +45,49 @@ function Get-ApplicationInfo {
             }
 
             $matchedApps.Add($matchedAppConfig) | Out-Null 
+
+            $matchedAppConfig | Format-List
+
+            $discoveredEXEs = Get-ChildItem -Path $matchedAppConfig.InstallLocation -Filter "*.exe" -Recurse
+
+            Write-Host "Executables found in Program Directory ($($matchedAppConfig.InstallLocation)):"
+
+            $discoveredEXEs.Name | Format-List
+
+            $shortcuts = Get-ChildItem -Path "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\" -Filter "*.lnk" -Recurse
+
+            $sh = New-Object -ComObject WScript.Shell
+
+            $targetList = @{}
+            
+            $shortcuts | ForEach-Object {
+
+                $path = Convert-Path -Path $_.PSPath
+                $target = $sh.CreateShortcut($path).TargetPath
+                
+                $targetList.Add($path, $target)
+
+            }
+
+            $discoveredEXEs  | ForEach-Object {
+                $path = Convert-Path -Path $_.PSPath
+
+                $targetList.GetEnumerator() | ForEach-Object {
+
+                    if ($path -eq $_.Value) {
+
+                        Write-Host "`nMatching exe and shortcut found:`n" -ForegroundColor Blue
+                        Write-Host "Executable : $path" -ForegroundColor Green
+                        Write-Host "Shortcut Target: $($_.Name)" -ForegroundColor Green
+                    }
+
+                }
+            }
+            
+        
             
         }
     
     }
-
-    Return $matchedApps
 
 }
