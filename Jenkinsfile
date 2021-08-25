@@ -17,7 +17,7 @@ pipeline {
     stage('Cleanup') {
       steps { 
         sh 'ls' 
-        discordSend description: "Jenkins Pipeline Build", footer: "Footer Text", link: env.BUILD_URL, result: currentBuild.currentResult, title: JOB_NAME, webhookURL: '$DISCORD_URL'
+        discordSend description: "PackageHelper Module Build", footer: "https://github.com/samhep/PackageHelper", link: env.BUILD_URL, result: currentBuild.currentResult, title: JOB_NAME, webhookURL: "$DISCORD_URL"
       }
     }
   }
