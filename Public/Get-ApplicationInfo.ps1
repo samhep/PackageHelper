@@ -50,10 +50,6 @@ function Get-ApplicationInfo {
 
             $discoveredEXEs = Get-ChildItem -Path $matchedAppConfig.InstallLocation -Filter "*.exe" -Recurse
 
-            Write-Host "Executables found in Program Directory ($($matchedAppConfig.InstallLocation)):"
-
-            $discoveredEXEs.Name | Format-List
-
             $shortcuts = Get-ChildItem -Path "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\" -Filter "*.lnk" -Recurse
 
             $sh = New-Object -ComObject WScript.Shell
@@ -83,6 +79,10 @@ function Get-ApplicationInfo {
 
                 }
             }
+
+            Write-Host "`nExecutables found in Program Directory ($($matchedAppConfig.InstallLocation)):"
+
+            $discoveredEXEs.Name | Format-List
             
         
             
