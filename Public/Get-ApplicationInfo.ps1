@@ -82,10 +82,8 @@ function Get-ApplicationInfo {
 
             Write-Host "`nExecutables found in Program Directory ($($matchedAppConfig.InstallLocation)):"
 
-            $discoveredEXEs.Name | Format-List
-            
-        
-            
+            $discoveredEXEs.VersionInfo | Format-Table -Property OriginalFilename, FileVersion
+                        
         }
     
     }
